@@ -264,7 +264,7 @@ Router.prototype.use = function(path) {
     });
 
     if (middlewareStack.length !== 0) {
-        middleware = this.Middleware.create(path, this);
+        middleware = new this.Middleware(path, this);
         layers[layers.length] = middleware;
 
         middleware.mount(middlewareStack);
@@ -275,7 +275,7 @@ Router.prototype.use = function(path) {
 
 Router.prototype.route = function(path) {
     var layers = this.__layers,
-        route = this.Route.create(path, this);
+        route = new this.Route(path, this);
 
     layers[layers.length] = route;
     return route;
@@ -300,7 +300,7 @@ Router.prototype.scope = function(path) {
     }
 
     if (!router) {
-        router = this.Scope.create(path, this);
+        router = new this.Scope(path, this);
 
         router.Route = this.Route;
         router.Middleware = this.Middleware;
