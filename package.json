@@ -21,6 +21,7 @@
     "mocha": "^2.1.0"
   },
   "dependencies": {
+    "http_error": "nathanfaucett/http_error",
     "is_null_or_undefined": "nathanfaucett/is_null_or_undefined",
     "urls": "nathanfaucett/urls",
     "extend": "nathanfaucett/extend",

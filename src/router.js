@@ -6,6 +6,7 @@ var isFunction = require("is_function"),
     forEach = require("for_each"),
     fastSlice = require("fast_slice"),
     urls = require("urls"),
+    HttpError = require("http_error"),
 
     cleanPath = require("./utils/clean_path"),
     Route = require("./route"),
@@ -129,7 +130,7 @@ Router.prototype.handler = function(req, res, callback) {
                 return;
             }
             if (!err) {
-                err = new Error("404 - Not Found");
+                err = new HttpError(404);
             }
 
             msg = err.stack || (err.toString ? err.toString() : err + "");
