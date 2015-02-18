@@ -87,8 +87,10 @@ Router.prototype.middleware = function(err, req, res, next) {
             return;
         }
 
-        if (layer instanceof Route) {
+        if (layer.__end === true) {
             req.route = layer;
+        } else {
+            req.middleware = layer;
         }
 
         if (layer instanceof Router) {
@@ -158,8 +160,10 @@ Router.prototype.handler = function(req, res, callback) {
             return;
         }
 
-        if (layer instanceof Route) {
+        if (layer.__end === true) {
             req.route = layer;
+        } else {
+            req.middleware = layer;
         }
 
         if (layer instanceof Router) {

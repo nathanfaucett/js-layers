@@ -32,6 +32,16 @@ describe("#Router", function() {
                 }
             );
 
+            router.use(
+                function(req, res, next) {
+                    if (req.route) {
+                        next();
+                    } else {
+                        next(new Error("404 - Not Found"));
+                    }
+                }
+            );
+
             router.handler({
                     method: "GET",
                     pathname: "/parent/1/child/1.json",
@@ -42,6 +52,18 @@ describe("#Router", function() {
                 function() {
                     assert.equal(calledMiddleware, true);
                     assert.equal(calledRoute, true);
+                }
+            );
+
+            router.handler({
+                    method: "GET",
+                    pathname: "/not_found",
+                    url: "http://localhost:8888/not_found"
+                }, {
+                    end: function() {}
+                },
+                function(err) {
+                    assert.equal(err.message, "404 - Not Found");
                 }
             );
         });

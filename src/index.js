@@ -1,4 +1,4 @@
-var layers = module.exports;
+var layers = exports;
 
 
 layers.Layer = require("./layer");
