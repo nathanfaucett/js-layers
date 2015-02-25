@@ -28,6 +28,7 @@ describe("#Router", function() {
                 },
                 function(req, res, next) {
                     calledRoute = true;
+                    res.end();
                     next();
                 }
             );
@@ -47,7 +48,9 @@ describe("#Router", function() {
                     pathname: "/parent/1/child/1.json",
                     url: "http://localhost:8888/parent/1/child/1.json"
                 }, {
-                    end: function() {}
+                    end: function() {
+                        this.headersSent = true;
+                    }
                 },
                 function() {
                     assert.equal(calledMiddleware, true);
@@ -60,7 +63,9 @@ describe("#Router", function() {
                     pathname: "/not_found",
                     url: "http://localhost:8888/not_found"
                 }, {
-                    end: function() {}
+                    end: function() {
+                        this.headersSent = true;
+                    }
                 },
                 function(err) {
                     assert.equal(err.message, "404 - Not Found");

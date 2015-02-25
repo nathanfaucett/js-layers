@@ -49,36 +49,34 @@ Route.prototype.__handle = function(err, req, res, next) {
 
     if (!stack || !(stackLength = stack.length)) {
         next(err);
-        return;
-    }
+    } else {
+        (function done(err) {
+            var handler, length;
 
-    (function done(err) {
-        var handler, length;
-
-        if (index >= stackLength) {
-            next(err);
-            return;
-        }
-
-        handler = stack[index++];
-        length = handler.length;
-
-        req.next = done;
-
-        try {
-            if (length >= 4) {
-                handler(err, req, res, done);
+            if (index >= stackLength) {
+                next(err);
             } else {
-                if (!err) {
-                    handler(req, res, done);
-                } else {
-                    done(err);
+                handler = stack[index++];
+                length = handler.length;
+
+                req.next = done;
+
+                try {
+                    if (length >= 4) {
+                        handler(err, req, res, done);
+                    } else {
+                        if (!err) {
+                            handler(req, res, done);
+                        } else {
+                            done(err);
+                        }
+                    }
+                } catch (e) {
+                    done(e);
                 }
             }
-        } catch (e) {
-            done(e);
-        }
-    }(err));
+        }(err));
+    }
 };
 
 Route.prototype.mount = function(method, handlers) {

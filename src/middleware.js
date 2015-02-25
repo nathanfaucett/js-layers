@@ -44,36 +44,34 @@ Middleware.prototype.__handle = function(err, req, res, next) {
 
     if (!stack || !stackLength) {
         next(err);
-        return;
-    }
+    } else {
+        (function done(err) {
+            var handler, length;
 
-    (function done(err) {
-        var handler, length;
-
-        if (index >= stackLength) {
-            next(err);
-            return;
-        }
-
-        handler = stack[index++];
-        length = handler.length;
-
-        req.next = done;
-
-        try {
-            if (length >= 4) {
-                handler(err, req, res, done);
+            if (index >= stackLength) {
+                next(err);
             } else {
-                if (!err) {
-                    handler(req, res, done);
-                } else {
-                    next(err);
+                handler = stack[index++];
+                length = handler.length;
+
+                req.next = done;
+
+                try {
+                    if (length >= 4) {
+                        handler(err, req, res, done);
+                    } else {
+                        if (!err) {
+                            handler(req, res, done);
+                        } else {
+                            next(err);
+                        }
+                    }
+                } catch (e) {
+                    next(e);
                 }
             }
-        } catch (e) {
-            next(e);
-        }
-    }(err));
+        }(err));
+    }
 };
 
 Middleware.prototype.mount = function(handlers) {
