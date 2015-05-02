@@ -32,10 +32,7 @@ Router.create = function(path, parent) {
 Router.prototype.construct = function(path, parent) {
     var _this = this;
 
-    LayerPrototype.construct.call(this, path, parent, false);
-
     this.__layers = [];
-    this.__methods["*"] = true;
 
     this.Route = Route;
     this.Middleware = Middleware;
@@ -44,6 +41,10 @@ Router.prototype.construct = function(path, parent) {
     this.__handle = function(err, req, res, next) {
         _this.middleware(err, req, res, next);
     };
+
+    LayerPrototype.construct.call(this, path, parent, false);
+
+    this.__methods["*"] = true;
 
     return this;
 };
@@ -207,6 +208,20 @@ Router.prototype.find = function(path, type) {
     }
 
     return null;
+};
+
+Router.prototype.setPath = function(path) {
+    var layers = this.__layers,
+        i = -1,
+        il = layers.length - 1;
+
+    LayerPrototype.setPath.call(this, path);
+
+    while (i++ < il) {
+        layers[i].recompile();
+    }
+
+    return this;
 };
 
 Router.prototype.unmount = function(path, type) {

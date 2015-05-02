@@ -65,22 +65,18 @@ Layer.prototype.setPath = function(path) {
 };
 
 Layer.prototype.match = function(path) {
-
     return filterParams(this.__regexp, this.__params, path);
 };
 
 Layer.prototype.format = function() {
-
     return pathToRegexp.format(this.__path);
 };
 
 Layer.prototype.recompile = function() {
-
     return this.setPath(this.__relativePath);
 };
 
 Layer.prototype.compile = function() {
-
     this.__regexp = pathToRegexp(this.__path, this.__params, this.__end);
     return this;
 };
