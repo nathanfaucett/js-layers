@@ -5,7 +5,8 @@ var isArray = require("is_array"),
     fastSlice = require("fast_slice"),
     mount = require("./utils/mount"),
     unmount = require("./utils/unmount"),
-    Layer = require("./layer");
+    LayerData = require("./LayerData"),
+    Layer = require("./Layer");
 
 
 var LayerPrototype = Layer.prototype;
@@ -23,6 +24,8 @@ Route.create = function(path, parent) {
     return new Route(path, parent);
 };
 
+Route.prototype.__isRoute__ = true;
+
 Route.prototype.construct = function(path, parent) {
 
     LayerPrototype.construct.call(this, path, parent, true);
@@ -32,50 +35,22 @@ Route.prototype.construct = function(path, parent) {
     return this;
 };
 
-Route.prototype.destruct = function() {
+Route.prototype.destructor = function() {
 
-    LayerPrototype.destruct.call(this);
+    LayerPrototype.destructor.call(this);
 
     this.__stack = null;
 
     return this;
 };
 
-Route.prototype.__handle = function(err, req, res, next) {
-    var method = req.method,
-        stack = method === "HEAD" && !this.__methods[method] ? this.__stack.GET : this.__stack[method],
-        index = 0,
-        stackLength;
+Route.prototype.enqueue = function(queue, parentData, pathname, method) {
+    var stack = this.__stack[method],
+        i = -1,
+        il = stack.length - 1;
 
-    if (!stack || !(stackLength = stack.length)) {
-        next(err);
-    } else {
-        (function done(err) {
-            var handler, length;
-
-            if (index >= stackLength) {
-                next(err);
-            } else {
-                handler = stack[index++];
-                length = handler.length;
-
-                req.next = done;
-
-                try {
-                    if (length >= 4) {
-                        handler(err, req, res, done);
-                    } else {
-                        if (!err) {
-                            handler(req, res, done);
-                        } else {
-                            done(err);
-                        }
-                    }
-                } catch (e) {
-                    done(e);
-                }
-            }
-        }(err));
+    while (i++ < il) {
+        queue[queue.length] = new LayerData(stack[i], parentData);
     }
 };
 
@@ -84,7 +59,8 @@ Route.prototype.mount = function(method, handlers) {
 
     if (indexOf(methods, method.toLowerCase()) === -1) {
         throw new Error(
-            "Route.mount(method, handlers) method " + method.toUpperCase() + " is not allowed, methods are\n\t" + methods.join("\n\t")
+            "Route.mount(method, handlers) method " + method.toUpperCase() +
+            " is not allowed, methods are\n\t" + methods.join("\n\t")
         );
     }
 
@@ -111,7 +87,9 @@ Route.prototype.unmount = function(method, handlers) {
     }
 
     unmount(stack, isArray(handlers) ? handlers : fastSlice(arguments, 1));
-    if (stack.length === 0) this.__methods[method] = false;
+    if (stack.length === 0) {
+        this.__methods[method] = false;
+    }
 
     return this;
 };
@@ -120,7 +98,6 @@ forEach(methods, function(method) {
     var upper = method.toUpperCase();
 
     Route.prototype[method.toLowerCase()] = function(handlers) {
-
         return this.mount(upper, isArray(handlers) ? handlers : fastSlice(arguments));
     };
 });

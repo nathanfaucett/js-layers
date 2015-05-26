@@ -1,9 +1,9 @@
 var layers = exports;
 
 
-layers.Layer = require("./layer");
-layers.Middleware = require("./middleware");
-layers.Route = require("./route");
-layers.Router = require("./router");
+layers.Layer = require("./Layer");
+layers.Middleware = require("./Middleware");
+layers.Route = require("./Route");
+layers.Router = require("./Router");
 
-layers.filterParams = require("./utils/filter_params");
+layers.filterParams = require("./utils/filterParams");

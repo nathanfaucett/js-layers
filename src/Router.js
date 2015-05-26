@@ -2,16 +2,16 @@ var isFunction = require("is_function"),
     isObject = require("is_object"),
     isString = require("is_string"),
     indexOf = require("index_of"),
-    extend = require("extend"),
     forEach = require("for_each"),
     fastSlice = require("fast_slice"),
     urls = require("urls"),
     HttpError = require("http_error"),
 
-    cleanPath = require("./utils/clean_path"),
-    Route = require("./route"),
-    Middleware = require("./middleware"),
-    Layer = require("./layer");
+    cleanPath = require("./utils/cleanPath"),
+    Data = require("./Data"),
+    Route = require("./Route"),
+    Middleware = require("./Middleware"),
+    Layer = require("./Layer");
 
 
 var LayerPrototype = Layer.prototype;
@@ -32,17 +32,12 @@ Router.create = function(path, parent) {
 Router.prototype.__isRouter__ = true;
 
 Router.prototype.construct = function(path, parent) {
-    var _this = this;
 
     this.__layers = [];
 
     this.Route = Route;
     this.Middleware = Middleware;
     this.Scope = Router;
-
-    this.__handle = function(err, req, res, next) {
-        _this.middleware(err, req, res, next);
-    };
 
     LayerPrototype.construct.call(this, path, parent, false);
 
@@ -51,11 +46,10 @@ Router.prototype.construct = function(path, parent) {
     return this;
 };
 
-Router.prototype.destruct = function() {
+Router.prototype.destructor = function() {
 
-    LayerPrototype.destruct.call(this);
+    LayerPrototype.destructor.call(this);
 
-    this.__handle = null;
     this.__layers = null;
 
     this.Route = null;
@@ -65,119 +59,99 @@ Router.prototype.destruct = function() {
     return this;
 };
 
-Router.prototype.middleware = function(err, req, res, next) {
-    var pathname = req.pathname || (req.pathname = urls.parse(req.url).pathname),
-        method = req.method,
-        layers = this.__layers,
-        index = 0,
-        layersLength = layers.length;
+Router.prototype.enqueue = function(queue, parentData, pathname, method) {
+    var layers = this.__layers,
+        i = -1,
+        il = layers.length - 1,
+        layer, methods, params, data;
 
-    (function done(err) {
-        var layer, methods, params;
+    while (i++ < il) {
+        layer = layers[i];
+        methods = layer.__methods;
 
-        if (index >= layersLength) {
-            next(err);
-        } else {
-            layer = layers[index++];
-            methods = layer.__methods["*"] || layer.__methods[method] || (method === "HEAD" && layer.__methods.GET);
+        if (
+            (methods["*"] || methods[method] || (method === "HEAD" && methods.GET)) &&
+            (params = layer.match(pathname))
+        ) {
+            data = new Data(layer, params);
 
-            req.next = done;
-
-            if (!layer || !methods || !(params = layer.match(pathname))) {
-                done(err);
+            if (layer.__isRouter__) {
+                data.router = layer;
+                layer.enqueue(queue, data, pathname, method);
             } else {
-                if (layer.__end === true) {
-                    req.route = layer;
+                if (layer.__isMiddleware__) {
+                    data.middleware = layer;
                 } else {
-                    req.middleware = layer;
+                    data.route = layer;
                 }
-
-                if (layer.__isRouter__) {
-                    req.params = req.scopeParams = params;
-                } else {
-                    req.params = extend({}, req.scopeParams, params);
-                }
-
-                req.layer = layer;
-
-                try {
-                    layer.__handle(err, req, res, done);
-                } catch (e) {
-                    done(e);
-                }
+                layer.enqueue(queue, data, pathname, method);
             }
         }
-    }(err));
+    }
 };
 
 Router.prototype.handler = function(req, res, callback) {
     var _this = this,
+        queue = [],
         pathname = req.pathname || (req.pathname = urls.parse(req.url).pathname),
         method = req.method,
-        layers = this.__layers,
         index = 0,
-        layersLength = layers.length;
+        queueLength;
 
-    req.scopeParams = {};
+    this.enqueue(queue, null, pathname, method);
+    queueLength = queue.length;
 
-    this.emit("start", req, res);
+    (function next(error) {
+        var msg, code, layer, fn, data, length;
 
-    (function next(err) {
-        var msg, code,
-            layer, methods, params;
-
-        if (res.headersSent || index >= layersLength) {
-            if (res.headersSent && !err) {
+        if (res.headersSent || index >= queueLength) {
+            if (res.headersSent && !error) {
                 if (isFunction(callback)) {
-                    callback(err, req, res);
+                    callback(error, req, res);
                 }
-                _this.emit("end", err, req, res);
+                _this.emit("end", error, req, res);
             } else {
-                err = err || new HttpError(404);
+                error = error || new HttpError(404);
 
-                msg = err.stack || (err.toString ? err.toString() : err + "");
-                code = err.statusCode || err.status || err.code || 500;
+                msg = error.stack || (error.toString ? error.toString() : error + "");
+                code = error.statusCode || error.status || error.code || 500;
 
                 if (res.headersSent) {
-                    console.error(err);
+                    console.error(error);
                 } else {
                     res.statusCode = code;
                     res.end(msg);
                 }
 
                 if (isFunction(callback)) {
-                    callback(err, req, res);
+                    callback(error, req, res);
                 }
-                _this.emit("end", err, req, res);
+                _this.emit("end", error, req, res);
             }
         } else {
-            layer = layers[index++];
-            methods = layer.__methods["*"] || layer.__methods[method] || (method === "HEAD" && layer.__methods.GET);
+            layer = queue[index++];
+            fn = layer.fn;
+            length = fn.length;
+            data = layer.data;
 
+            req.params = data.params;
+            req.layer = data.layer;
+            req.middleware = data.middleware;
+            req.route = data.route;
             req.next = next;
 
-            if (!layer || !methods || !(params = layer.match(pathname))) {
-                next(err);
-            } else {
-                if (layer.__end === true) {
-                    req.route = layer;
+            try {
+                if (length >= 4) {
+                    fn(error, req, res, next);
                 } else {
-                    req.middleware = layer;
+                    if (!error) {
+                        fn(req, res, next);
+                    } else {
+                        next(error);
+                    }
                 }
-
-                if (layer.__isRouter__) {
-                    req.params = req.scopeParams = params;
-                } else {
-                    req.params = extend({}, req.scopeParams, params);
-                }
-
-                req.layer = layer;
-
-                try {
-                    layer.__handle(err, req, res, next);
-                } catch (e) {
-                    next(e);
-                }
+            } catch (e) {
+                next(e);
             }
         }
     }());
@@ -196,11 +170,11 @@ Router.prototype.find = function(path, type) {
 
         if (!layer || path.indexOf(layer.__path) === -1) {
             continue;
-        } else if (type === "route" && layer instanceof Route) {
+        } else if (type === "route" && layer.__isRoute__) {
             return layer;
-        } else if (type === "middleware" && layer instanceof Middleware) {
+        } else if (type === "middleware" && layer.__isMiddleware__) {
             return layer;
-        } else if (layer instanceof Router) {
+        } else if (layer.__isRouter__) {
             if (type === "scope" || type === "router") {
                 return layer;
             } else {
@@ -209,7 +183,7 @@ Router.prototype.find = function(path, type) {
         }
     }
 
-    return null;
+    return undefined;
 };
 
 Router.prototype.setPath = function(path) {
@@ -263,7 +237,7 @@ Router.prototype.use = function(path) {
 
         if (isFunction(handler)) {
             middlewareStack[middlewareStack.length] = handler;
-        } else if (handler instanceof Router) {
+        } else if (handler.__isRouter__) {
             _this.scope(handler);
         } else if (isObject(handler)) {
             if (isFunction(handler.middleware)) {
@@ -308,7 +282,7 @@ Router.prototype.scope = function(path) {
     var layers = this.__layers,
         router;
 
-    if (path instanceof Router) {
+    if (path.__isRouter__) {
         router = path;
         path = router.__relativePath;
 
@@ -324,7 +298,6 @@ Router.prototype.scope = function(path) {
 
     if (!router) {
         router = new this.Scope(path, this);
-
         router.Route = this.Route;
         router.Middleware = this.Middleware;
         router.Scope = this.Scope;

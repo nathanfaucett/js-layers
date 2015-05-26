@@ -5,9 +5,9 @@ var EventEmitter = require("event_emitter"),
     filter = require("filter"),
     map = require("map"),
 
-    filterParams = require("./utils/filter_params"),
-    cleanPath = require("./utils/clean_path"),
-    buildPath = require("./utils/build_path");
+    filterParams = require("./utils/filterParams"),
+    cleanPath = require("./utils/cleanPath"),
+    buildPath = require("./utils/buildPath");
 
 
 module.exports = Layer;
@@ -41,7 +41,7 @@ Layer.prototype.construct = function(path, parent, end) {
     return this;
 };
 
-Layer.prototype.destruct = function() {
+Layer.prototype.destructor = function() {
 
     this.__parent = null;
     this.__regexp = null;

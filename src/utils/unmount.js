@@ -9,7 +9,8 @@ module.exports = unmount;
 
 function unmount(stack, handlers) {
     forEach(handlers, function(handler) {
-        var value = null;
+        var value = null,
+            index;
 
         if (isFunction(handler)) {
             value = handler;
