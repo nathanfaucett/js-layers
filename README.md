@@ -21,7 +21,7 @@ router.use(
     function bodyParser(req, res, next) {
         // body parser middleware
     }
-)
+);
 
 router.route() // same as "/"
     .get(
@@ -29,7 +29,7 @@ router.route() // same as "/"
             // send home info
             next();
         }
-    )
+    );
 
 sessions.use(
     function middleware(req, res, next) {
@@ -43,7 +43,7 @@ sessions.route("sign_in")
             // return user if signed in
             next();
         }
-    )
+    );
 
 sessions.route("sign_up")
     .post(
@@ -51,7 +51,7 @@ sessions.route("sign_up")
             // sign user in
             next();
         }
-    )
+    );
 
 
 ```

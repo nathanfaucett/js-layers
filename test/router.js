@@ -28,10 +28,20 @@ describe("#Router", function() {
                 },
                 function(req, res, next) {
                     calledRoute = true;
-                    res.end();
                     next();
                 }
             );
+
+            router.scope("/parent/:parent_id[0-9]")
+                .route("/child/:id[0-9](.:format)")
+                .get(
+                    function(req, res, next) {
+                        assert.equal(req.params.parent_id, 1);
+                        assert.equal(req.params.id, 1);
+                        res.end();
+                        next();
+                    }
+                );
 
             router.use(
                 function(req, res, next) {

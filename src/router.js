@@ -29,6 +29,8 @@ Router.create = function(path, parent) {
     return new Router(path, parent);
 };
 
+Router.prototype.__isRouter__ = true;
+
 Router.prototype.construct = function(path, parent) {
     var _this = this;
 
@@ -90,7 +92,7 @@ Router.prototype.middleware = function(err, req, res, next) {
                     req.middleware = layer;
                 }
 
-                if (layer instanceof Router) {
+                if (layer.__isRouter__) {
                     req.params = req.scopeParams = params;
                 } else {
                     req.params = extend({}, req.scopeParams, params);
@@ -163,7 +165,7 @@ Router.prototype.handler = function(req, res, callback) {
                     req.middleware = layer;
                 }
 
-                if (layer instanceof Router) {
+                if (layer.__isRouter__) {
                     req.params = req.scopeParams = params;
                 } else {
                     req.params = extend({}, req.scopeParams, params);
