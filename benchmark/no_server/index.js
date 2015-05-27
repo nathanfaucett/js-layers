@@ -17,4 +17,6 @@ suite.on("complete", function onComplete() {
     console.log("Fastest is " + this.filter("fastest").pluck("name"));
 });
 
+
+console.log("Starting test, could take a while");
 suite.run();

@@ -1,5 +1,4 @@
 var http = require("http"),
-    Benchmark = require("benchmark"),
     layers = require("../../src/index");
 
 

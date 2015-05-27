@@ -17,4 +17,4 @@ app.get("/posts/:id", function(req, res, next) {
 });
 
 
-var server = app.listen(8080);
+app.listen(8080);

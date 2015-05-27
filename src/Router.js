@@ -70,7 +70,7 @@ Router.prototype.enqueue = function(queue, parentData, pathname, method) {
         methods = layer.__methods;
 
         if (
-            (methods["*"] || methods[method] || (method === "HEAD" && methods.GET)) &&
+            (methods[method] || methods["*"] || (method === "HEAD" && methods.GET)) &&
             (params = layer.match(pathname))
         ) {
             data = new Data(layer, params);
@@ -90,6 +90,34 @@ Router.prototype.enqueue = function(queue, parentData, pathname, method) {
     }
 };
 
+function Router_final(_this, req, res, error, callback) {
+    var msg, code;
+
+    if (res.headersSent && !error) {
+        if (isFunction(callback)) {
+            callback(error, req, res);
+        }
+        _this.emit("end", error, req, res);
+    } else {
+        error = error || new HttpError(404);
+
+        msg = error.stack || (error.toString ? error.toString() : error + "");
+        code = error.statusCode || error.status || error.code || 500;
+
+        if (res.headersSent) {
+            console.error(error);
+        } else {
+            res.statusCode = code;
+            res.end(msg);
+        }
+
+        if (isFunction(callback)) {
+            callback(error, req, res);
+        }
+        _this.emit("end", error, req, res);
+    }
+}
+
 Router.prototype.handler = function(req, res, callback) {
     var _this = this,
         queue = [],
@@ -102,32 +130,10 @@ Router.prototype.handler = function(req, res, callback) {
     queueLength = queue.length;
 
     (function next(error) {
-        var msg, code, layer, fn, data, length;
+        var layer, fn, data, length;
 
         if (res.headersSent || index >= queueLength) {
-            if (res.headersSent && !error) {
-                if (isFunction(callback)) {
-                    callback(error, req, res);
-                }
-                _this.emit("end", error, req, res);
-            } else {
-                error = error || new HttpError(404);
-
-                msg = error.stack || (error.toString ? error.toString() : error + "");
-                code = error.statusCode || error.status || error.code || 500;
-
-                if (res.headersSent) {
-                    console.error(error);
-                } else {
-                    res.statusCode = code;
-                    res.end(msg);
-                }
-
-                if (isFunction(callback)) {
-                    callback(error, req, res);
-                }
-                _this.emit("end", error, req, res);
-            }
+            Router_final(_this, req, res, error, callback);
         } else {
             layer = queue[index++];
             fn = layer.fn;
