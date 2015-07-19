@@ -176,9 +176,9 @@ Router.prototype.find = function(path, type) {
 
         if (!layer || path.indexOf(layer.__path) === -1) {
             continue;
-        } else if (type === "route" && layer.__isRoute__) {
-            return layer;
         } else if (type === "middleware" && layer.__isMiddleware__) {
+            return layer;
+        } else if (type === "route" && layer.__isRoute__) {
             return layer;
         } else if (layer.__isRouter__) {
             if (type === "scope" || type === "router") {
