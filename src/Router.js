@@ -2,7 +2,7 @@ var isFunction = require("is_function"),
     isObject = require("is_object"),
     isString = require("is_string"),
     indexOf = require("index_of"),
-    forEach = require("for_each"),
+    arrayForEach = require("array-for_each"),
     fastSlice = require("fast_slice"),
     urls = require("urls"),
     HttpError = require("http_error"),
@@ -238,7 +238,7 @@ Router.prototype.use = function(path) {
 
     middlewareStack = [];
 
-    forEach(stack, function(handler) {
+    arrayForEach(stack, function(handler) {
         var mw;
 
         if (isFunction(handler)) {

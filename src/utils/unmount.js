@@ -1,14 +1,14 @@
 var isObject = require("is_object"),
     isFunction = require("is_function"),
     indexOf = require("index_of"),
-    forEach = require("for_each");
+    arrayForEach = require("array-for_each");
 
 
 module.exports = unmount;
 
 
 function unmount(stack, handlers) {
-    forEach(handlers, function(handler) {
+    arrayForEach(handlers, function(handler) {
         var value = null,
             index;
 

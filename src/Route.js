@@ -1,6 +1,6 @@
 var isArray = require("is_array"),
     indexOf = require("index_of"),
-    forEach = require("for_each"),
+    arrayForEach = require("array-for_each"),
     methods = require("methods"),
     fastSlice = require("fast_slice"),
     mount = require("./utils/mount"),
@@ -94,7 +94,7 @@ Route.prototype.unmount = function(method, handlers) {
     return this;
 };
 
-forEach(methods, function(method) {
+arrayForEach(methods, function(method) {
     var upper = method.toUpperCase();
 
     Route.prototype[method.toLowerCase()] = function(handlers) {
@@ -107,7 +107,7 @@ Route.prototype.mSearch = Route.prototype["m-search"];
 Route.prototype.all = function(handlers) {
     var _this = this;
 
-    forEach(methods, function(method) {
+    arrayForEach(methods, function(method) {
         _this[method](handlers);
     });
     return this;
