@@ -2,7 +2,7 @@ var EventEmitter = require("event_emitter"),
     pathToRegexp = require("path_to_regexp"),
     isString = require("is_string"),
     keys = require("keys"),
-    filter = require("filter"),
+    objectFilter = require("object-filter"),
     arrayMap = require("array-map"),
 
     filterParams = require("./utils/filterParams"),
@@ -92,7 +92,7 @@ Layer.prototype.toJSON = function(json) {
         return param.toJSON();
     });
 
-    json.methods = filter(keys(methods), function(method) {
+    json.methods = objectFilter(keys(methods), function(method) {
         return !!methods[method];
     });
 

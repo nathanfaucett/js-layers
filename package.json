@@ -37,7 +37,7 @@
     "event_emitter": "git://github.com/nathanfaucett/event_emitter.git",
     "path_to_regexp": "git://github.com/nathanfaucett/path_to_regexp.git",
     "keys": "git://github.com/nathanfaucett/keys.git",
-    "filter": "git://github.com/nathanfaucett/filter.git",
+    "object-filter": "git://github.com/nathanfaucett/object-filter.git",
     "array-map": "git://github.com/nathanfaucett/array-map.git",
     "url_path": "git://github.com/nathanfaucett/url_path.git",
     "is_function": "git://github.com/nathanfaucett/is_function.git",
