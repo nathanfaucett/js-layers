@@ -1,5 +1,5 @@
-var isString = require("is_string"),
-    urlPath = require("url_path");
+var isString = require("@nathanfaucett/is_string"),
+    urlPath = require("@nathanfaucett/url_path");
 
 
 module.exports = cleanPath;

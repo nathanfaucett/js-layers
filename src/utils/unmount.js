@@ -1,7 +1,7 @@
-var isObject = require("is_object"),
-    isFunction = require("is_function"),
-    indexOf = require("index_of"),
-    arrayForEach = require("array-for_each");
+var isObject = require("@nathanfaucett/is_object"),
+    isFunction = require("@nathanfaucett/is_function"),
+    indexOf = require("@nathanfaucett/index_of"),
+    arrayForEach = require("@nathanfaucett/array-for_each");
 
 
 module.exports = unmount;

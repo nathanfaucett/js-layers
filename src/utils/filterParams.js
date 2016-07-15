@@ -1,5 +1,5 @@
 var parseURIComponent = require("./parseURIComponent"),
-    isNullOrUndefined = require("is_null_or_undefined");
+    isNullOrUndefined = require("@nathanfaucett/is_null_or_undefined");
 
 
 module.exports = filterParams;

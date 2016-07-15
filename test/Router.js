@@ -53,7 +53,7 @@ tape("Router#handler(req : Request, res : Response[, callback(err : Error, req, 
     router.handler({
             method: "GET",
             pathname: "/parent/1/child/1.json",
-            url: "http://localhost:8888/parent/1/child/1.json"
+            url: "http://localhost:9999/parent/1/child/1.json"
         }, {
             end: function() {
                 this.headersSent = true;
@@ -68,7 +68,7 @@ tape("Router#handler(req : Request, res : Response[, callback(err : Error, req, 
     router.handler({
             method: "GET",
             pathname: "/not_found",
-            url: "http://localhost:8888/not_found"
+            url: "http://localhost:9999/not_found"
         }, {
             end: function() {
                 this.headersSent = true;

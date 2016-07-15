@@ -1,5 +1,5 @@
-var isArray = require("is_array"),
-    fastSlice = require("fast_slice"),
+var isArray = require("@nathanfaucett/is_array"),
+    fastSlice = require("@nathanfaucett/fast_slice"),
 
     mount = require("./utils/mount"),
     unmount = require("./utils/unmount"),

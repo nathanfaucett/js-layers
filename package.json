@@ -1,5 +1,5 @@
 {
-  "name": "layers",
+  "name": "@nathanfaucett/layers",
   "version": "0.0.1",
   "description": "layers for the browser and node.js",
   "repository": {
@@ -8,10 +8,11 @@
   },
   "main": "src/index.js",
   "scripts": {
+    "bench": "node bench",
     "test": "npm run test-node",
     "test-node": "node ./test | ./node_modules/.bin/tap-spec",
     "test-node-raw": "node ./test",
-    "test-browser-local": "zuul --local 8080 --ui tape -- ./test"
+    "test-browser-local": "zuul --local 9999 --ui tape -- ./test"
   },
   "keywords": [
     "layers",
@@ -21,32 +22,35 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.11.3",
-    "grunt-jsbeautifier": "^0.2.10",
+    "benchmark": "^2.0.0",
+    "express": "^4.13.3",
+    "grunt": "^1.0.1",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-jsbeautifier": "^0.2.13",
+    "@nathanfaucett/request": "^0.0.2",
     "tap-spec": "^4.1.0",
     "tape": "^4.2.0",
     "zuul": "^3.6.0"
   },
   "dependencies": {
-    "http_error": "git://github.com/nathanfaucett/http_error.git",
-    "is_null_or_undefined": "git://github.com/nathanfaucett/is_null_or_undefined.git",
-    "urls": "git://github.com/nathanfaucett/urls.git",
-    "extend": "git://github.com/nathanfaucett/extend.git",
-    "array-for_each": "git://github.com/nathanfaucett/array-for_each.git",
-    "event_emitter": "git://github.com/nathanfaucett/event_emitter.git",
-    "path_to_regexp": "git://github.com/nathanfaucett/path_to_regexp.git",
-    "keys": "git://github.com/nathanfaucett/keys.git",
-    "object-filter": "git://github.com/nathanfaucett/object-filter.git",
-    "array-map": "git://github.com/nathanfaucett/array-map.git",
-    "url_path": "git://github.com/nathanfaucett/url_path.git",
-    "is_function": "git://github.com/nathanfaucett/is_function.git",
-    "is_object": "git://github.com/nathanfaucett/is_object.git",
-    "is_string": "git://github.com/nathanfaucett/is_string.git",
-    "is_array": "git://github.com/nathanfaucett/is_array.git",
-    "index_of": "git://github.com/nathanfaucett/index_of.git",
-    "fast_slice": "git://github.com/nathanfaucett/fast_slice.git",
-    "inherits": "git://github.com/nathanfaucett/inherits.git",
-    "methods": "git://github.com/nathanfaucett/methods.git"
+    "@nathanfaucett/http_error": "^0.0.1",
+    "@nathanfaucett/is_null_or_undefined": "^0.0.1",
+    "@nathanfaucett/urls": "^0.0.2",
+    "@nathanfaucett/extend": "^0.0.1",
+    "@nathanfaucett/array-for_each": "^0.0.1",
+    "@nathanfaucett/event_emitter": "^0.0.1",
+    "@nathanfaucett/path_to_regexp": "^0.0.1",
+    "@nathanfaucett/keys": "^0.0.1",
+    "@nathanfaucett/object-filter": "^0.0.1",
+    "@nathanfaucett/array-map": "^0.0.1",
+    "@nathanfaucett/url_path": "^0.0.1",
+    "@nathanfaucett/is_function": "^0.0.1",
+    "@nathanfaucett/is_object": "^0.0.1",
+    "@nathanfaucett/is_string": "^0.0.1",
+    "@nathanfaucett/is_array": "^0.0.1",
+    "@nathanfaucett/index_of": "^0.0.1",
+    "@nathanfaucett/fast_slice": "^0.0.1",
+    "@nathanfaucett/inherits": "^0.0.1",
+    "@nathanfaucett/methods": "^0.0.1"
   }
 }
