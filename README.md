@@ -1,7 +1,7 @@
 layers
 =======
 
-layers for the browser and node.js
+layers is rack like Router
 
 ```javascript
 var layers = require("@nathanfaucett/layers");

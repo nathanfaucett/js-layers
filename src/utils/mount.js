@@ -6,22 +6,22 @@ var isObject = require("@nathanfaucett/is_object"),
 module.exports = mount;
 
 
-function mount(stack, handlers) {
+function mount(layers, handlers) {
     arrayForEach(handlers, function(handler) {
         var mw;
 
         if (isFunction(handler)) {
-            stack[stack.length] = handler;
+            layers[layers.length] = handler;
         } else if (isObject(handler)) {
             if (isFunction(handler.middleware)) {
                 mw = handler.middleware;
 
                 if (mw.length >= 4) {
-                    stack[stack.length] = function(err, req, res, next) {
+                    layers[layers.length] = function(err, req, res, next) {
                         handler.middleware(err, req, res, next);
                     };
                 } else if (mw.length <= 3) {
-                    stack[stack.length] = function(req, res, next) {
+                    layers[layers.length] = function(req, res, next) {
                         handler.middleware(req, res, next);
                     };
                 } else {

@@ -1,5 +1,5 @@
 test
-benchmark
+bench
 node_modules
 npm-debug.log
 .npmignore

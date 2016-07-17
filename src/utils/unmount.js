@@ -7,7 +7,7 @@ var isObject = require("@nathanfaucett/is_object"),
 module.exports = unmount;
 
 
-function unmount(stack, handlers) {
+function unmount(layers, handlers) {
     arrayForEach(handlers, function(handler) {
         var value = null,
             index;
@@ -22,10 +22,10 @@ function unmount(stack, handlers) {
             }
         }
 
-        if ((index = indexOf(stack, value)) === -1) {
-            throw new Error("unmount(handlers[, ...]) stack does not contain handler");
+        if ((index = indexOf(layers, value)) === -1) {
+            throw new Error("unmount(handlers[, ...]) layers does not contain handler");
         }
 
-        stack.splice(index, 1);
+        layers.splice(index, 1);
     });
 }

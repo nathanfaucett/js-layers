@@ -1,7 +1,7 @@
 {
   "name": "@nathanfaucett/layers",
   "version": "0.0.1",
-  "description": "layers for the browser and node.js",
+  "description": "layers is rack like Router",
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanfaucett/layers.git"
@@ -22,35 +22,32 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "benchmark": "^2.0.0",
-    "express": "^4.13.3",
+    "@nathanfaucett/layers": "^0.0.1",
+    "@nathanfaucett/request": "0.0.2",
+    "benchmark": "^2.1.0",
+    "express": "^4.14.0",
     "grunt": "^1.0.1",
     "grunt-contrib-jshint": "^1.0.0",
     "grunt-jsbeautifier": "^0.2.13",
-    "@nathanfaucett/request": "^0.0.2",
     "tap-spec": "^4.1.0",
     "tape": "^4.2.0",
     "zuul": "^3.6.0"
   },
   "dependencies": {
-    "@nathanfaucett/http_error": "^0.0.1",
-    "@nathanfaucett/is_null_or_undefined": "^0.0.1",
-    "@nathanfaucett/urls": "^0.0.2",
-    "@nathanfaucett/extend": "^0.0.1",
-    "@nathanfaucett/array-for_each": "^0.0.1",
-    "@nathanfaucett/event_emitter": "^0.0.1",
-    "@nathanfaucett/path_to_regexp": "^0.0.1",
-    "@nathanfaucett/keys": "^0.0.1",
-    "@nathanfaucett/object-filter": "^0.0.1",
-    "@nathanfaucett/array-map": "^0.0.1",
-    "@nathanfaucett/url_path": "^0.0.1",
-    "@nathanfaucett/is_function": "^0.0.1",
-    "@nathanfaucett/is_object": "^0.0.1",
-    "@nathanfaucett/is_string": "^0.0.1",
-    "@nathanfaucett/is_array": "^0.0.1",
-    "@nathanfaucett/index_of": "^0.0.1",
-    "@nathanfaucett/fast_slice": "^0.0.1",
-    "@nathanfaucett/inherits": "^0.0.1",
-    "@nathanfaucett/methods": "^0.0.1"
+    "@nathanfaucett/array-for_each": "0.0.1",
+    "@nathanfaucett/array-map": "0.0.1",
+    "@nathanfaucett/extend": "0.0.1",
+    "@nathanfaucett/fast_slice": "0.0.1",
+    "@nathanfaucett/http_error": "0.0.1",
+    "@nathanfaucett/index_of": "0.0.1",
+    "@nathanfaucett/is_array": "0.0.1",
+    "@nathanfaucett/is_function": "0.0.1",
+    "@nathanfaucett/is_object": "0.0.1",
+    "@nathanfaucett/is_string": "0.0.1",
+    "@nathanfaucett/keys": "0.0.1",
+    "@nathanfaucett/layer": "^0.0.1",
+    "@nathanfaucett/methods": "0.0.1",
+    "@nathanfaucett/object-filter": "0.0.1",
+    "@nathanfaucett/urls": "0.0.2"
   }
 }

@@ -3,59 +3,47 @@ var isArray = require("@nathanfaucett/is_array"),
     arrayForEach = require("@nathanfaucett/array-for_each"),
     methods = require("@nathanfaucett/methods"),
     fastSlice = require("@nathanfaucett/fast_slice"),
+
     mount = require("./utils/mount"),
     unmount = require("./utils/unmount"),
+
     LayerData = require("./LayerData"),
     Layer = require("./Layer");
 
 
-var LayerPrototype = Layer.prototype;
+var RoutePrototype;
 
 
 module.exports = Route;
 
 
 function Route(path, parent) {
+
     Layer.call(this, path, parent, true);
+
+    this.__layers = {};
 }
 Layer.extend(Route);
+RoutePrototype = Route.prototype;
 
 Route.create = function(path, parent) {
     return new Route(path, parent);
 };
 
-Route.prototype.__isRoute__ = true;
+RoutePrototype.__isRoute__ = true;
 
-Route.prototype.construct = function(path, parent) {
-
-    LayerPrototype.construct.call(this, path, parent, true);
-
-    this.__stack = {};
-
-    return this;
-};
-
-Route.prototype.destructor = function() {
-
-    LayerPrototype.destructor.call(this);
-
-    this.__stack = null;
-
-    return this;
-};
-
-Route.prototype.enqueue = function(queue, parentData, pathname, method) {
-    var stack = this.__stack[method],
+RoutePrototype.enqueue = function(queue, parentData, pathname, method) {
+    var layers = this.__layers[method],
         i = -1,
-        il = stack.length - 1;
+        il = layers.length - 1;
 
     while (i++ < il) {
-        queue[queue.length] = new LayerData(stack[i], parentData);
+        queue[queue.length] = new LayerData(layers[i], parentData);
     }
 };
 
-Route.prototype.mount = function(method, handlers) {
-    var stack;
+RoutePrototype.mount = function(method, handlers) {
+    var layers;
 
     if (indexOf(methods, method.toLowerCase()) === -1) {
         throw new Error(
@@ -65,29 +53,29 @@ Route.prototype.mount = function(method, handlers) {
     }
 
     method = method.toUpperCase();
-    stack = this.__stack[method] || (this.__stack[method] = []);
+    layers = this.__layers[method] || (this.__layers[method] = []);
 
-    mount(stack, isArray(handlers) ? handlers : fastSlice(arguments, 1));
+    mount(layers, isArray(handlers) ? handlers : fastSlice(arguments, 1));
 
-    if (stack.length > 0) {
+    if (layers.length > 0) {
         this.__methods[method] = true;
     }
 
     return this;
 };
 
-Route.prototype.unmount = function(method, handlers) {
-    var stack;
+RoutePrototype.unmount = function(method, handlers) {
+    var layers;
 
     method = method.toUpperCase();
-    stack = this.__stack[method];
+    layers = this.__layers[method];
 
-    if (!stack) {
+    if (!layers) {
         throw new Error("Route.unmount(method, handler[, ...]) method not allowed " + method);
     }
 
-    unmount(stack, isArray(handlers) ? handlers : fastSlice(arguments, 1));
-    if (stack.length === 0) {
+    unmount(layers, isArray(handlers) ? handlers : fastSlice(arguments, 1));
+    if (layers.length === 0) {
         this.__methods[method] = false;
     }
 

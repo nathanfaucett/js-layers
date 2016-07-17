@@ -1,87 +1,25 @@
-var EventEmitter = require("@nathanfaucett/event_emitter"),
-    pathToRegexp = require("@nathanfaucett/path_to_regexp"),
-    isString = require("@nathanfaucett/is_string"),
+var Layer = require("@nathanfaucett/layer"),
     keys = require("@nathanfaucett/keys"),
     objectFilter = require("@nathanfaucett/object-filter"),
-    arrayMap = require("@nathanfaucett/array-map"),
-
-    filterParams = require("./utils/filterParams"),
-    cleanPath = require("./utils/cleanPath"),
-    buildPath = require("./utils/buildPath");
+    arrayMap = require("@nathanfaucett/array-map");
 
 
-module.exports = Layer;
+module.exports = StackLayer;
 
 
-function Layer(path, parent, end) {
+function StackLayer(path, parent, end) {
 
-    EventEmitter.call(this, -1);
+    Layer.call(this, path, parent, end);
 
-    this.construct(path, parent, end);
-}
-EventEmitter.extend(Layer);
-
-Layer.create = function(path, parent, end) {
-    return (new Layer(path, parent, end));
-};
-
-Layer.prototype.construct = function(path, parent, end) {
-
-    this.__parent = parent;
-    this.__regexp = null;
-    this.__params = [];
     this.__methods = {};
+}
+Layer.extend(StackLayer);
 
-    this.__end = !!end;
-    this.__relativePath = null;
-    this.__path = null;
-
-    this.setPath(isString(path) ? path : "/");
-
-    return this;
+StackLayer.create = function(path, parent, end) {
+    return (new StackLayer(path, parent, end));
 };
 
-Layer.prototype.destructor = function() {
-
-    this.__parent = null;
-    this.__regexp = null;
-    this.__params = null;
-    this.__methods = null;
-
-    this.__end = null;
-    this.__relativePath = null;
-    this.__path = null;
-
-    return this;
-};
-
-Layer.prototype.setPath = function(path) {
-
-    this.__relativePath = cleanPath(path);
-    this.__path = buildPath(this.__parent, this.__relativePath);
-    this.compile();
-
-    return this;
-};
-
-Layer.prototype.match = function(path) {
-    return filterParams(this.__regexp, this.__params, path);
-};
-
-Layer.prototype.format = function() {
-    return pathToRegexp.format(this.__path);
-};
-
-Layer.prototype.recompile = function() {
-    return this.setPath(this.__relativePath);
-};
-
-Layer.prototype.compile = function() {
-    this.__regexp = pathToRegexp(this.__path, this.__params, this.__end);
-    return this;
-};
-
-Layer.prototype.toJSON = function(json) {
+StackLayer.prototype.toJSON = function(json) {
     var methods = this.__methods;
 
     json = json || {};

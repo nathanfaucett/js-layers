@@ -6,32 +6,22 @@ var isFunction = require("@nathanfaucett/is_function"),
     fastSlice = require("@nathanfaucett/fast_slice"),
     urls = require("@nathanfaucett/urls"),
     HttpError = require("@nathanfaucett/http_error"),
+    cleanPath = require("@nathanfaucett/layer/src/cleanPath"),
 
-    cleanPath = require("./utils/cleanPath"),
     Data = require("./Data"),
     Route = require("./Route"),
     Middleware = require("./Middleware"),
     Layer = require("./Layer");
 
 
-var LayerPrototype = Layer.prototype;
+var LayerPrototype = Layer.prototype,
+    RouterPrototype;
 
 
 module.exports = Router;
 
 
 function Router(path, parent) {
-    Layer.call(this, path, parent, false);
-}
-Layer.extend(Router);
-
-Router.create = function(path, parent) {
-    return new Router(path, parent);
-};
-
-Router.prototype.__isRouter__ = true;
-
-Router.prototype.construct = function(path, parent) {
 
     this.__layers = [];
 
@@ -39,27 +29,20 @@ Router.prototype.construct = function(path, parent) {
     this.Middleware = Middleware;
     this.Scope = Router;
 
-    LayerPrototype.construct.call(this, path, parent, false);
+    Layer.call(this, path, parent, false);
 
     this.__methods["*"] = true;
+}
+Layer.extend(Router);
+RouterPrototype = Router.prototype;
 
-    return this;
+Router.create = function(path, parent) {
+    return new Router(path, parent);
 };
 
-Router.prototype.destructor = function() {
+RouterPrototype.__isRouter__ = true;
 
-    LayerPrototype.destructor.call(this);
-
-    this.__layers = null;
-
-    this.Route = null;
-    this.Middleware = null;
-    this.Scope = null;
-
-    return this;
-};
-
-Router.prototype.enqueue = function(queue, parentData, pathname, method) {
+RouterPrototype.enqueue = function(queue, parentData, pathname, method) {
     var layers = this.__layers,
         i = -1,
         il = layers.length - 1,
@@ -77,15 +60,13 @@ Router.prototype.enqueue = function(queue, parentData, pathname, method) {
 
             if (layer.__isRouter__) {
                 data.router = layer;
-                layer.enqueue(queue, data, pathname, method);
+            } else if (layer.__isMiddleware__) {
+                data.middleware = layer;
             } else {
-                if (layer.__isMiddleware__) {
-                    data.middleware = layer;
-                } else {
-                    data.route = layer;
-                }
-                layer.enqueue(queue, data, pathname, method);
+                data.route = layer;
             }
+
+            layer.enqueue(queue, data, pathname, method);
         }
     }
 };
@@ -101,7 +82,7 @@ function Router_final(_this, req, res, error, callback) {
     } else {
         error = error || new HttpError(404);
 
-        msg = error.stack || (error.toString ? error.toString() : error + "");
+        msg = error.layers || (error.toString ? error.toString() : error + "");
         code = error.statusCode || error.status || error.code || 500;
 
         if (res.headersSent) {
@@ -118,7 +99,7 @@ function Router_final(_this, req, res, error, callback) {
     }
 }
 
-Router.prototype.handler = function(req, res, callback) {
+RouterPrototype.handler = function(req, res, callback) {
     var _this = this,
         queue = [],
         pathname = req.pathname || (req.pathname = urls.parse(req.url).pathname),
@@ -163,7 +144,7 @@ Router.prototype.handler = function(req, res, callback) {
     }());
 };
 
-Router.prototype.find = function(path, type) {
+RouterPrototype.find = function(path, type) {
     var layers = this.__layers,
         i = layers.length,
         layer;
@@ -192,7 +173,7 @@ Router.prototype.find = function(path, type) {
     return undefined;
 };
 
-Router.prototype.setPath = function(path) {
+RouterPrototype.setPath = function(path) {
     var layers = this.__layers,
         i = -1,
         il = layers.length - 1;
@@ -206,7 +187,7 @@ Router.prototype.setPath = function(path) {
     return this;
 };
 
-Router.prototype.unmount = function(path, type) {
+RouterPrototype.unmount = function(path, type) {
     var layer = this.find(path, type || (type = "route")),
         scope, layers, index;
 
@@ -224,7 +205,7 @@ Router.prototype.unmount = function(path, type) {
     return this;
 };
 
-Router.prototype.use = function(path) {
+RouterPrototype.use = function(path) {
     var _this = this,
         layers = this.__layers,
         middleware, middlewareStack, stack;
@@ -276,7 +257,7 @@ Router.prototype.use = function(path) {
     return this;
 };
 
-Router.prototype.route = function(path) {
+RouterPrototype.route = function(path) {
     var layers = this.__layers,
         route = new this.Route(path, this);
 
@@ -284,7 +265,7 @@ Router.prototype.route = function(path) {
     return route;
 };
 
-Router.prototype.scope = function(path) {
+RouterPrototype.scope = function(path) {
     var layers = this.__layers,
         router;
 
