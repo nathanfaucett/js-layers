@@ -48,6 +48,6 @@
     "@nathanfaucett/layer": "^0.0.1",
     "@nathanfaucett/methods": "0.0.1",
     "@nathanfaucett/object-filter": "0.0.1",
-    "@nathanfaucett/urls": "0.0.2"
+    "@nathanfaucett/url": "0.0.1"
   }
 }

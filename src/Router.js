@@ -4,7 +4,7 @@ var isFunction = require("@nathanfaucett/is_function"),
     indexOf = require("@nathanfaucett/index_of"),
     arrayForEach = require("@nathanfaucett/array-for_each"),
     fastSlice = require("@nathanfaucett/fast_slice"),
-    urls = require("@nathanfaucett/urls"),
+    url = require("@nathanfaucett/url"),
     HttpError = require("@nathanfaucett/http_error"),
     cleanPath = require("@nathanfaucett/layer/src/cleanPath"),
 
@@ -102,7 +102,7 @@ function Router_final(_this, req, res, error, callback) {
 RouterPrototype.handler = function(req, res, callback) {
     var _this = this,
         queue = [],
-        pathname = req.pathname || (req.pathname = urls.parse(req.url).pathname),
+        pathname = req.pathname || (req.pathname = url.parse(req.url).pathname),
         method = req.method,
         index = 0,
         queueLength;
