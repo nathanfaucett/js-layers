@@ -54,4 +54,11 @@ sessions.route("sign_up")
     );
 
 
+var server = new http.Server();
+
+server.on("request", function onRequest(request, response) {
+    router.handler(request, response, function onHandle(error) {
+        // handle error if one passed all the way through the layers
+    });
+})
 ```
