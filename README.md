@@ -13,13 +13,15 @@ var router = new layers.Router(), // layers.Router.create()
     sessions = router.scope("sessions");
 
 
-// can be a object with a middleware function
 router.use(
     function cors(req, res, next) {
         // cors middleware
     },
-    function bodyParser(req, res, next) {
-        // body parser middleware
+    // can be an object with a middleware function
+    {
+      middleware: function bodyParser(req, res, next) {
+          // body parser middleware
+      }
     }
 );
 
