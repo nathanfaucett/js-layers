@@ -1,7 +1,7 @@
 {
   "name": "@nathanfaucett/layers",
-  "version": "0.0.4",
-  "description": "layers is rack like Router",
+  "version": "0.0.5",
+  "description": "layers is a rack like Router",
   "repository": {
     "type": "git",
     "url": "https://github.com/nathanfaucett/layers.git"
@@ -33,20 +33,20 @@
     "zuul": "^3.6.0"
   },
   "dependencies": {
-    "@nathanfaucett/array-for_each": "0.0.1",
-    "@nathanfaucett/array-map": "0.0.1",
+    "@nathanfaucett/array-for_each": "^0.0.1",
+    "@nathanfaucett/array-map": "^0.0.1",
     "@nathanfaucett/extend": "^0.0.2",
-    "@nathanfaucett/fast_slice": "0.0.1",
-    "@nathanfaucett/http_error": "0.0.1",
-    "@nathanfaucett/index_of": "0.0.1",
-    "@nathanfaucett/is_array": "0.0.1",
-    "@nathanfaucett/is_function": "0.0.1",
-    "@nathanfaucett/is_object": "0.0.1",
-    "@nathanfaucett/is_string": "0.0.1",
-    "@nathanfaucett/keys": "0.0.1",
-    "@nathanfaucett/layer": "^0.0.2",
-    "@nathanfaucett/methods": "0.0.1",
-    "@nathanfaucett/object-filter": "0.0.1",
-    "@nathanfaucett/url": "0.0.1"
+    "@nathanfaucett/fast_slice": "^0.0.1",
+    "@nathanfaucett/http_error": "^0.0.2",
+    "@nathanfaucett/index_of": "^0.0.1",
+    "@nathanfaucett/is_array": "^0.0.1",
+    "@nathanfaucett/is_function": "^0.0.1",
+    "@nathanfaucett/is_object": "^0.0.1",
+    "@nathanfaucett/is_string": "^0.0.1",
+    "@nathanfaucett/keys": "^0.0.2",
+    "@nathanfaucett/layer": "^0.0.3",
+    "@nathanfaucett/methods": "^0.0.1",
+    "@nathanfaucett/object-filter": "^0.0.2",
+    "@nathanfaucett/url": "^0.0.2"
   }
 }

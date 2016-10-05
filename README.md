@@ -1,7 +1,7 @@
 layers
 =======
 
-layers is rack like Router
+layers is a rack like Router
 
 ```javascript
 var layers = require("@nathanfaucett/layers");
