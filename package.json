@@ -1,6 +1,6 @@
 {
   "name": "@nathanfaucett/layers",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "layers is a rack like Router",
   "repository": {
     "type": "git",
@@ -22,7 +22,7 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "devDependencies": {
-    "@nathanfaucett/request": "0.0.7",
+    "@nathanfaucett/request": "^0.0.9",
     "benchmark": "^2.1.0",
     "express": "^4.14.0",
     "grunt": "^1.0.1",
@@ -47,6 +47,6 @@
     "@nathanfaucett/layer": "^0.0.3",
     "@nathanfaucett/methods": "^0.0.1",
     "@nathanfaucett/object-filter": "^0.0.2",
-    "@nathanfaucett/url": "^0.0.2"
+    "@nathanfaucett/url": "^0.0.3"
   }
 }
